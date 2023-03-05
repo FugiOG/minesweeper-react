@@ -1,0 +1,36 @@
+@import '../../styles/variables';
+
+.header {
+  box-sizing: border-box;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-bottom: 16px;
+
+  background-color: var(--bg-color);
+  @include shadow-board-in();
+
+  div:nth-child(n) {
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+    img {
+      height: 100%;
+    }
+  }
+}
+
+.counter {
+}
+
+.state {
+  cursor: pointer;
+}

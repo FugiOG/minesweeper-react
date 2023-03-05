@@ -1,0 +1,34 @@
+@import '../../styles/variables';
+
+.board {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  @include shadow-board-in();
+
+  .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    color: black;
+
+    img {
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

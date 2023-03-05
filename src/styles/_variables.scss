@@ -1,0 +1,14 @@
+@mixin shadow-board-in($direction: 1, $size: 4px) {
+  @if ($direction == 1) {
+    border-left: $size solid var(--shadow-cl);
+    border-top: $size solid var(--shadow-cl);
+    border-right: $size solid white;
+    border-bottom: $size solid white;
+  }
+  @if ($direction == -1) {
+    border-left: $size solid white;
+    border-top: $size solid white;
+    border-right: $size solid var(--shadow-cl);
+    border-bottom: $size solid var(--shadow-cl);
+  }
+}
