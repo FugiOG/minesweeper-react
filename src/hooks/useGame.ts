@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { createField } from '../helpers/createField'
+import { createNewField } from '../helpers/createNewField'
 import { GameState } from '../types/context.interface'
 import { IFieldItem } from '../types/field.interface'
 
@@ -9,9 +10,7 @@ export const useGame = () => {
   const mineQuantity = 40
 
   const [notOpened, setNotOpened] = useState(size * size - mineQuantity)
-  const [field, setField] = useState<IFieldItem[][]>(
-    createField(size, mineQuantity)
-  )
+  const [field, setField] = useState<IFieldItem[][]>(createNewField(size))
   const [gameState, setGameState] = useState<GameState>('playing')
   const [counter, setCounter] = useState<number>(mineQuantity)
   const [isPress, setIsPress] = useState(false)
@@ -28,7 +27,7 @@ export const useGame = () => {
     setNotOpened(size * size - mineQuantity)
     setIsPress(false)
     setStartClick(false)
-    setField(createField(size, mineQuantity))
+    setField(createNewField(size))
   }
 
   const checkWin = (notOpenedTile: number) => {
@@ -51,6 +50,12 @@ export const useGame = () => {
 
     if (field[currX][currY].condition !== 'fill') return
 
+    let startField: IFieldItem[][] = []
+
+    if (!startClick) {
+      startField = createField(size, mineQuantity, currX, currY, field)
+    }
+
     if (field[currX][currY].value === -1) {
       setClickedMine({ x: currX, y: currY })
       setGameState('lose')
@@ -59,12 +64,19 @@ export const useGame = () => {
       )
     } else if (field[currX][currY].value === 0) {
       const clearing: [number, number][] = []
+      let cleanField: IFieldItem[][] = []
+      if (!startClick) {
+        setStartClick(true)
+        cleanField = startField
+      } else {
+        cleanField = field
+      }
       const clear = (x: number, y: number) => {
         if (x >= 0 && x < size && y >= 0 && y < size) {
           if (
-            field[x][y].condition === 'opened' ||
-            field[x][y].condition === 'flag' ||
-            field[x][y].condition === 'question'
+            cleanField[x][y].condition === 'opened' ||
+            cleanField[x][y].condition === 'flag' ||
+            cleanField[x][y].condition === 'question'
           )
             return
 
@@ -77,22 +89,28 @@ export const useGame = () => {
       while (clearing.length) {
         const [x, y] = clearing.pop()!
 
-        field[x][y].condition = 'opened'
+        if (cleanField[x][y].condition === 'fill') {
+          cleanField[x][y].condition = 'opened'
+        }
 
-        if (field[x][y].value !== 0) continue
+        if (cleanField[x][y].value !== 0) continue
 
         clear(x + 1, y)
         clear(x - 1, y)
         clear(x, y + 1)
         clear(x, y - 1)
+
+        clear(x - 1, y - 1)
+        clear(x + 1, y + 1)
+        clear(x - 1, y + 1)
+        clear(x + 1, y - 1)
       }
+      setField((prev) => [...prev])
     } else {
       field[currX][currY].condition = 'opened'
+      setField((prev) => [...prev])
     }
-    if (!startClick) {
-      setStartClick(true)
-    }
-
+    setStartClick(true)
     let notOpenedTile = size * size - mineQuantity
 
     field.forEach((row) =>
@@ -104,7 +122,6 @@ export const useGame = () => {
     )
     setNotOpened(notOpenedTile)
     checkWin(notOpenedTile)
-    setField((prev) => [...prev])
   }
 
   const rightMouseClick = (x: number, y: number) => {
