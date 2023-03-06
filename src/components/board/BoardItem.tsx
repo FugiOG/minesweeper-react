@@ -51,13 +51,7 @@ const BoardItem: FC<IPorps> = ({ item, xCord, yCord }) => {
     setSrcMask(tempMask)
   }, [condition, value, xCord, yCord, gameState])
 
-  let mask = (
-    <img
-      src={value === -1 ? Mask.numbersOfMine['-1'] : srcMask}
-      alt=""
-      draggable={false}
-    />
-  )
+  let mask = <img src={srcMask} alt="" draggable={false} />
 
   const onMouseDownHandler = (e: MouseEvent) => {
     if (e.button !== 0) return
